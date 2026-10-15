@@ -27,4 +27,6 @@ flutter build apk --flavor github --debug --target-platform android-arm64
 
 第一版无已验证的微鲸 HDMI 直达接口；通过原厂桌面/遥控器信号源切换。不会猜测输入端口或修改CEC。
 
-本地验证：依赖解析、数据库代码生成、lib 静态分析（无错误；上游提示保留）和9项选定测试通过。首次 Android 打包受本地SDK/NDK许可证与组件缺失限制；由分支专用 CI 继续构建。没有安装到电视。
+本地验证：依赖解析、数据库代码生成、lib 静态分析（无错误；上游提示保留）和9项选定测试通过。本地SDK/NDK组件缺失导致本地打包受限；GitHub Actions run 38714597941 已成功完成 Android ARM64 debug APK 构建和上传。没有安装到电视。
+
+CI: https://github.com/cjjb2006/ArcWhaley/actions/runs/38714597941
