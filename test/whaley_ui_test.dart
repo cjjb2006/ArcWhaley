@@ -21,6 +21,14 @@ class TestApps extends ChangeNotifier implements AppsService {
   final requested = <String>[];
   bool reversed = false;
   @override
+  String? get pendingReorderFocusPackage => null;
+  @override
+  int? get pendingReorderFocusCategoryId => null;
+  @override
+  bool consumeDirtyImage(String packageName) => false;
+  @override
+  Future<Uint8List> getAppBanner(String packageName) async => Uint8List(0);
+  @override
   List<App> get applications => reversed ? [second, first] : [first, second];
   @override
   List<Category> get categories => [Category.withApplications(name: 'Favorites', applications: [second])];

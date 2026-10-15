@@ -107,8 +107,8 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
   late final AnimationController _animation;
 
   late final CurvedAnimation _curvedAnimation;
-  static const double _focusedScale = 1.07;
-  static const Duration _focusAnimationDuration = Duration(milliseconds: 180);
+  static const double _focusedScale = 1.12;
+  static const Duration _focusAnimationDuration = Duration(milliseconds: 120);
 
   @override
   void initState() {
@@ -223,7 +223,7 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
                           Material(
                             borderRadius: BorderRadius.circular(12),
                             clipBehavior: Clip.antiAlias,
-                            elevation: shouldHighlight ? 7 : 4,
+                            elevation: shouldHighlight ? 3 : 0,
                             shadowColor: Colors.black,
                             child: Stack(
                               fit: StackFit.expand,
@@ -240,14 +240,6 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
                                   },
                                 ),
                                 if (_moving) ..._arrows(),
-                                IgnorePointer(
-                                  child: AnimatedOpacity(
-                                    duration: _focusAnimationDuration,
-                                    curve: Curves.easeInOut,
-                                    opacity: shouldHighlight ? 0.0 : 1.0,
-                                    child: const ColoredBox(color: Color(0x1A000000)),
-                                  ),
-                                ),
                               ],
                             ),
                           ),
@@ -293,7 +285,8 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
       }
       if (mounted) {
         setState(() {
-          _loadedImage = (type, ResizeImage(MemoryImage(bytes), width: 480));
+          _loadedImage = (type, ResizeImage(MemoryImage(bytes),
+              width: type == AppImageType.Banner ? 480 : 160));
         });
       }
     } catch (_) {
@@ -412,11 +405,6 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
       return;
     }
 
-    final now = DateTime.now();
-    if (_lastEnsureVisibleAt != null && now.difference(_lastEnsureVisibleAt!).inMilliseconds < 120) {
-      return;
-    }
-    _lastEnsureVisibleAt = now;
     if (widget.ensureVisibleOnFocus) {
       _ensureVisibleIfNeeded(
         context,

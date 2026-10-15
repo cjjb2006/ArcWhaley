@@ -210,7 +210,8 @@ class AppsService extends ChangeNotifier
     notifyListeners();
     
     // Pre-cache icons for visible apps
-    _preCacheIcons();
+    // Load images as cards enter the viewport instead of flooding the TV's
+    // platform thread with requests for every installed app at startup.
   }
 
   Future<void> _preCacheIcons() async {

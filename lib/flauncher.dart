@@ -194,7 +194,7 @@ class _FLauncherState extends State<FLauncher> with WidgetsBindingObserver {
 
     return CustomScrollView(
       controller: _scrollController,
-      cacheExtent: 1200,
+      cacheExtent: 600,
       slivers: [
         if (favoriteApps.isNotEmpty || showWatchNextSection) ...[
           SliverToBoxAdapter(
@@ -363,8 +363,8 @@ class _FLauncherState extends State<FLauncher> with WidgetsBindingObserver {
                       autofocus: index == 0,
                       handleUpNavigationToSettings: isFirstSection && index < category.columnsCount,
                       enforceAspectRatio: false,
-                      onFocused: index < category.columnsCount ? onAppFocused : null,
-                      ensureVisibleOnFocus: onAppFocused == null || index >= category.columnsCount,
+                      onFocused: () => _onAppGridFocused(),
+                      ensureVisibleOnFocus: true,
                       onlyScrollWhenNearBottom: true,
                       onMove: (direction) => _onGridMove(context, category, index, direction, filteredApps),
                       onMoveEnd: () => context.read<AppsService>().saveApplicationOrderInCategory(category),

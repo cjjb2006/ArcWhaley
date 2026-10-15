@@ -106,17 +106,20 @@ android {
             signingConfig signingConfigs.debug
         }
         release {
-            minifyEnabled true
-            shrinkResources true
+            minifyEnabled System.getenv('WHALEY_PREVIEW') != 'true'
+            shrinkResources System.getenv('WHALEY_PREVIEW') != 'true'
+            if (System.getenv('WHALEY_PREVIEW') == 'true') {
+                applicationIdSuffix '.debug'
+            }
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.release
+            signingConfig System.getenv('WHALEY_PREVIEW') == 'true' ? signingConfigs.debug : signingConfigs.release
         }
     }
 
     splits {
         abi {
             // https://stackoverflow.com/a/39950584/21037183
-            enable gradle.startParameter.taskNames.any {
+            enable System.getenv('WHALEY_PREVIEW') != 'true' && gradle.startParameter.taskNames.any {
                 it.startsWith("assemble") && it.endsWith("Release")
             }
             reset()
