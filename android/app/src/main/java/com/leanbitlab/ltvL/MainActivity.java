@@ -94,6 +94,7 @@ public class MainActivity extends FlutterActivity {
                 case "applicationExists" -> result.success(applicationExists(call.arguments()));
                 case "launchActivityFromAction" -> result.success(launchActivityFromAction(call.arguments()));
                 case "launchApp" -> result.success(launchApp(call.arguments()));
+                case "openOriginalHome" -> result.success(openOriginalHome());
                 case "openSettings" -> result.success(openSettings());
                 case "installApk" -> result.success(installApk(call.arguments()));
                 case "requestInstallUnknownAppsPermission" -> {
@@ -200,7 +201,7 @@ public class MainActivity extends FlutterActivity {
     }
 
     private List<Map<String, Serializable>> getApplications() {
-        ExecutorService executor = Executors.newFixedThreadPool(4);
+        ExecutorService executor = Executors.newFixedThreadPool(2);
         CompletionService<Pair<Boolean, List<ResolveInfo>>> queryIntentActivitiesCompletionService = new ExecutorCompletionService<>(
                 executor);
         queryIntentActivitiesCompletionService.submit(() -> Pair.create(false, queryIntentActivities(false)));
@@ -413,7 +414,16 @@ public class MainActivity extends FlutterActivity {
         return tryStartActivity(intent);
     }
 
+    private boolean openOriginalHome() {
+        if(!"WTV55K1X".equalsIgnoreCase(Build.MODEL))return false;
+        return tryStartActivity(new Intent(Intent.ACTION_MAIN).setClassName("com.helios.launcher","com.app.launcher.LauncherActivity"));
+    }
+
     private boolean openSettings() {
+        if("WTV55K1X".equalsIgnoreCase(Build.MODEL)){
+            Intent settings=getPackageManager().getLaunchIntentForPackage("com.helios.setting");
+            if(settings!=null&&tryStartActivity(settings))return true;
+        }
         return launchActivityFromAction(Settings.ACTION_SETTINGS);
     }
 
@@ -639,6 +649,7 @@ public class MainActivity extends FlutterActivity {
     }
 
     private boolean checkUsageStatsPermission() {
+        if(Build.VERSION.SDK_INT < 23)return false;
         AppOpsManager appOps = (AppOpsManager) getSystemService(Context.APP_OPS_SERVICE);
         int mode = appOps.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS,
                 android.os.Process.myUid(), getPackageName());
@@ -666,23 +677,7 @@ public class MainActivity extends FlutterActivity {
     }
 
     private boolean setSystemBrightness(int brightness) {
-        if (checkWriteSettingsPermission()) {
-            try {
-                android.content.ContentResolver resolver = getContentResolver();
-                // 1. Standard Android brightness
-                Settings.System.putInt(resolver, Settings.System.SCREEN_BRIGHTNESS_MODE, Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL);
-                Settings.System.putInt(resolver, Settings.System.SCREEN_BRIGHTNESS, brightness);
-                
-                // 2. Try common TV "Backlight" keys (Vendor specific)
-                Settings.System.putInt(resolver, "backlight", brightness);
-                Settings.System.putInt(resolver, "backlight_level", brightness);
-                
-                return true;
-            } catch (Exception e) {
-                // Ignore errors on specific keys as they may not exist
-                return true;
-            }
-        }
+        // Never write unknown vendor backlight keys on a television.
         return false;
     }
 
@@ -739,6 +734,7 @@ public class MainActivity extends FlutterActivity {
     }
 
     private boolean checkWatchNextPermission() {
+        if(Build.VERSION.SDK_INT < 26)return false;
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             return true;
         }
@@ -759,6 +755,7 @@ public class MainActivity extends FlutterActivity {
     }
 
     private List<Map<String, Object>> getWatchNextItems(int limit) {
+        if(Build.VERSION.SDK_INT < 26)return new ArrayList<>();
         List<Map<String, Object>> items = new ArrayList<>();
 
         if (!checkWatchNextPermission()) {
@@ -968,6 +965,7 @@ public class MainActivity extends FlutterActivity {
     private static final int MEDIA_PERMISSION_REQUEST_CODE = 9001;
 
     private boolean checkMediaPermissions() {
+        if(Build.VERSION.SDK_INT < 23)return true;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             return checkSelfPermission(Manifest.permission.READ_MEDIA_IMAGES) == PackageManager.PERMISSION_GRANTED
                 && checkSelfPermission(Manifest.permission.READ_MEDIA_VIDEO) == PackageManager.PERMISSION_GRANTED;
@@ -976,6 +974,7 @@ public class MainActivity extends FlutterActivity {
     }
 
     private void requestMediaPermissions() {
+        if(Build.VERSION.SDK_INT < 23)return;
         String[] permissions;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             permissions = new String[]{

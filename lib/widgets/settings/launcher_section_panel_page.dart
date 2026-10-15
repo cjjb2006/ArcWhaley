@@ -386,7 +386,7 @@ class _CategorySettingsState extends State<_CategorySettings>
               autofocus: _creating,
               isDense: true,
               isExpanded: true,
-              initialValue: sectionNamePresets.contains(_name) ? _name : 'Custom...',
+              value: sectionNamePresets.contains(_name) ? _name : 'Custom...',
               hint: Text(_name.isEmpty ? 'Select a name' : _name, style: Theme.of(context).textTheme.bodySmall),
               onChanged: (value) {
                 setState(() {
@@ -441,7 +441,7 @@ class _CategorySettingsState extends State<_CategorySettings>
               ),
               isDense: true,
               isExpanded: true,
-              initialValue: _categorySort,
+              value: _categorySort,
               onChanged: (value) {
                 setState(() {
                   _categorySort = value!;
@@ -476,7 +476,7 @@ class _CategorySettingsState extends State<_CategorySettings>
                 focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white, width: 2)),
                 contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               ),
-              initialValue: _categoryType,
+              value: _categoryType,
               onChanged: (value) {
                 setState(() {
                   _categoryType = value!;
@@ -510,7 +510,7 @@ class _CategorySettingsState extends State<_CategorySettings>
                   focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white, width: 2)),
                   contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 ),
-                initialValue: _columnsCount,
+                value: _columnsCount,
                 isDense: true,
                 isExpanded: true,
                 items: [for (int i = 5; i <= 10; i++) i]
@@ -541,7 +541,7 @@ class _CategorySettingsState extends State<_CategorySettings>
                   focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white, width: 2)),
                   contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 ),
-                initialValue: _rowHeight,
+                value: _rowHeight,
                 isDense: true,
                 isExpanded: true,
                 items: [for (int i = 80; i <= 150; i += 10) i]
@@ -690,7 +690,7 @@ class _LauncherSpacerSettingsState extends State<_LauncherSpacerSettings>
           ),
           isDense: true,
           isExpanded: true,
-          initialValue: _numberValue,
+          value: _numberValue,
           onChanged: (value) {
             setState(() {
               _numberValue = value!;

@@ -1,3 +1,4 @@
+import 'package:flauncher/flauncher_channel.dart';
 import 'package:flauncher/widgets/settings/settings_panel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -85,6 +86,14 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar>
                 onPressed: () => showDialog(context: context, builder: (_) => const SettingsPanel()),
               ),
               const SizedBox(width: 16),
+              _FocusableIconButton(
+                icon: Icons.home_outlined,
+                onPressed: () async {
+                  final opened = await FLauncherChannel().openOriginalHome();
+                  if (!opened && context.mounted) ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('微鲸桌面入口暂不可用，请使用遥控器主页键')));
+                },
+              ),
               // Network indicator (conditionally shown)
               Selector<SettingsService, bool>(
                 selector: (_, settings) => settings.showNetworkIndicatorInStatusBar,

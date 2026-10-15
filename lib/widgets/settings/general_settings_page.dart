@@ -20,7 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flauncher/l10n/app_localizations.dart';
 import 'focusable_settings_tile.dart';
-import 'brightness_settings_page.dart';
+import 'package:flauncher/flauncher_channel.dart';
 import 'date_time_format_page.dart';
 import 'back_button_action_page.dart';
 import 'wifi_usage_period_page.dart';
@@ -47,8 +47,8 @@ class GeneralSettingsPage extends StatelessWidget {
                 FocusableSettingsTile(
                   autofocus: true,
                   leading: const Icon(Icons.brightness_6),
-                  title: Text(localizations.brightnessScheduler, style: Theme.of(context).textTheme.bodyMedium),
-                  onPressed: () => Navigator.of(context).pushNamed(BrightnessSettingsPage.routeName),
+                  title: Text("电视画面设置", style: Theme.of(context).textTheme.bodyMedium),
+                  onPressed: () => FLauncherChannel().openSettings(),
                 ),
                 FocusableSettingsTile(
                   leading: const Icon(Icons.screenshot_monitor),

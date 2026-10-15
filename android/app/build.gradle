@@ -64,9 +64,9 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.omeda.arc"
+        applicationId "local.whaley.arc"
         compileSdk 36
-        minSdkVersion flutter.minSdkVersion
+        minSdkVersion 21
         targetSdk 35
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
@@ -126,6 +126,7 @@ android {
     }
 
     compileOptions {
+        coreLibraryDesugaringEnabled true
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
     }
@@ -147,3 +148,5 @@ android {
 flutter {
     source '../..'
 }
+
+dependencies { coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:2.1.5" }

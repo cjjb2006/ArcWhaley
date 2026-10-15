@@ -20,7 +20,6 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:screen_brightness/screen_brightness.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 // Time slot keys for storage
@@ -107,7 +106,7 @@ class BrightnessService extends ChangeNotifier {
     }
   }
 
-  bool get isEnabled => _sharedPreferences.getBool(_brightnessEnabled) ?? false;
+  bool get isEnabled => false; // Television backlight stays under OEM control.
 
   int getBrightnessForSlot(TimeSlot slot) {
     switch (slot) {
@@ -153,22 +152,8 @@ class BrightnessService extends ChangeNotifier {
   }
 
   Future<void> setEnabled(bool enabled) async {
-    await _sharedPreferences.setBool(_brightnessEnabled, enabled);
-    
-    if (enabled) {
-      _startScheduler();
-      // Apply brightness for current time slot immediately
-      await applyCurrentSlotBrightness();
-    } else {
-      _stopScheduler();
-      // Reset to system brightness
-      try {
-        await ScreenBrightness().resetScreenBrightness();
-      } catch (e) {
-        debugPrint('Error resetting brightness: $e');
-      }
-    }
-    
+    _stopScheduler();
+    await _sharedPreferences.setBool(_brightnessEnabled, false);
     notifyListeners();
   }
 
@@ -198,19 +183,7 @@ class BrightnessService extends ChangeNotifier {
   }
 
   Future<void> _applyBrightness(int brightnessPct) async {
-    try {
-      // 1. Try system-wide brightness first (needs WRITE_SETTINGS)
-      final int brightnessValue255 = ((brightnessPct / 100.0) * 255).round();
-      final bool success = await _platform.invokeMethod('setSystemBrightness', {'brightness': brightnessValue255});
-      
-      if (!success) {
-        // 2. Fallback to app-level brightness
-        final brightnessValue = brightnessPct / 100.0;
-        await ScreenBrightness().setScreenBrightness(brightnessValue);
-      }
-    } catch (e) {
-      debugPrint('Error setting brightness ($brightnessPct%): $e');
-    }
+    // The OEM owns physical TV backlight and picture settings.
   }
 
   void _startScheduler() {
@@ -228,7 +201,7 @@ class BrightnessService extends ChangeNotifier {
 
   Future<double> getCurrentBrightness() async {
     try {
-      return await ScreenBrightness().current;
+      return 1.0;
     } catch (e) {
       return 1.0;
     }
