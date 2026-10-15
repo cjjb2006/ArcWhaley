@@ -70,6 +70,10 @@ android {
         targetSdk 35
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+        // This TV launches apps in a 32-bit process, even though its CPU is ARM64.
+        ndk {
+            abiFilters 'armeabi-v7a'
+        }
     }
 
     signingConfigs {
@@ -120,7 +124,7 @@ android {
             def releaseAbis = System.getenv("CI") == "true"
                 ? ["arm64-v8a", "armeabi-v7a"]
                 : ["arm64-v8a", "armeabi-v7a", "x86", "x86_64"]
-            include(*releaseAbis)
+            include 'armeabi-v7a'
             universalApk true
         }
     }
