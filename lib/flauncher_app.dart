@@ -78,10 +78,12 @@ class FLauncherApp extends StatelessWidget
       localizationsDelegates: [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: AppLocalizations.supportedLocales,
-      title: 'FLauncher',
+      locale: const Locale('zh'),
+      title: '鲸简 Arc',
         theme: ThemeData(
           useMaterial3: true,
           brightness: Brightness.dark,

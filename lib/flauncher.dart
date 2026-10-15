@@ -21,6 +21,7 @@ import 'dart:ui' as ui;
 
 import 'package:collection/collection.dart';
 import 'package:flauncher/actions.dart';
+import 'package:flauncher/grid_navigation.dart';
 import 'package:flauncher/custom_traversal_policy.dart';
 import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/providers/launcher_state.dart';
@@ -37,6 +38,7 @@ import 'package:flauncher/widgets/wallpaper_video_background.dart';
 import 'package:flauncher/widgets/watch_next_row.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:flauncher/l10n/app_localizations.dart';
 
@@ -61,6 +63,14 @@ class _FLauncherState extends State<FLauncher> with WidgetsBindingObserver {
   final GlobalKey<FocusAwareAppBarState> _appBarKey = GlobalKey();
   final ScrollController _scrollController = ScrollController();
   final GlobalKey _dockKey = GlobalKey();
+  final Map<String, FocusNode> _gridNodes = {};
+
+  FocusNode _gridNode(Category category, App app) => _gridNodes.putIfAbsent(
+    '${category.id}:${app.packageName}', () => FocusNode(debugLabel: app.packageName));
+
+  bool _navigateGrid(Category category, List<App> apps, int index, LogicalKeyboardKey key) =>
+    navigateGridRows(index: index, columns: category.columnsCount, count: apps.length,
+      key: key, nodeAt: (target) => _gridNode(category, apps[target]));
 
   @override
   void initState() {
@@ -72,12 +82,15 @@ class _FLauncherState extends State<FLauncher> with WidgetsBindingObserver {
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     _scrollController.dispose();
+    for (final node in _gridNodes.values) {
+      node.dispose();
+    }
     super.dispose();
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
+    if (state == AppLifecycleState.resumed && context.read<SettingsService>().showWatchNextSection) {
       context.read<WatchNextService>().refreshPermissionAndItems();
     }
   }
@@ -181,6 +194,7 @@ class _FLauncherState extends State<FLauncher> with WidgetsBindingObserver {
 
     return CustomScrollView(
       controller: _scrollController,
+      cacheExtent: 1200,
       slivers: [
         if (favoriteApps.isNotEmpty || showWatchNextSection) ...[
           SliverToBoxAdapter(
@@ -273,7 +287,7 @@ class _FLauncherState extends State<FLauncher> with WidgetsBindingObserver {
                 return Padding(
                   padding: const EdgeInsets.only(left: 40, bottom: 8, top: 8),
                   child: Text(
-                    category.name,
+                    category.displayName,
                     style: Theme.of(context).textTheme.titleLarge!.copyWith(
                       shadows: const [Shadow(color: Colors.black54, offset: Offset(1, 1), blurRadius: 8)],
                     ),
@@ -344,6 +358,8 @@ class _FLauncherState extends State<FLauncher> with WidgetsBindingObserver {
                     child: AppCard(
                       category: category,
                       application: filteredApps[index],
+                      focusNode: _gridNode(category, filteredApps[index]),
+                      onNavigate: (key) => _navigateGrid(category, filteredApps, index, key),
                       autofocus: index == 0,
                       handleUpNavigationToSettings: isFirstSection && index < category.columnsCount,
                       enforceAspectRatio: false,

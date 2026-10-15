@@ -86,7 +86,7 @@ class NetworkService extends ChangeNotifier
           }
         });
 
-    _checkPermissionAndStartPolling();
+    // Traffic statistics are not used on this TV.
   }
 
   void _checkPermissionAndStartPolling() async {

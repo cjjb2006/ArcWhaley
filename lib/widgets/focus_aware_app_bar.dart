@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 
 import '../providers/launcher_state.dart';
 import '../providers/settings_service.dart';
-import 'daily_wifi_usage_widget.dart';
 import 'date_time_widget.dart';
 import 'network_widget.dart';
 
@@ -104,13 +103,7 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar>
                     )
                   : const SizedBox.shrink(),
               ),
-              // WiFi usage widget
-              Selector<SettingsService, bool>(
-                selector: (_, settings) => settings.showWifiWidgetInStatusBar,
-                builder: (context, showWifi, _) => showWifi
-                  ? const DailyWifiUsageWidget()
-                  : const SizedBox.shrink(),
-              ),
+
             ],
           ),
           // Right side: Date/Time only

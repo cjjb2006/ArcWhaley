@@ -387,7 +387,7 @@ class _CategorySettingsState extends State<_CategorySettings>
               isDense: true,
               isExpanded: true,
               value: sectionNamePresets.contains(_name) ? _name : 'Custom...',
-              hint: Text(_name.isEmpty ? 'Select a name' : _name, style: Theme.of(context).textTheme.bodySmall),
+              hint: Text(_name.isEmpty ? '选择名称' : _name, style: Theme.of(context).textTheme.bodySmall),
               onChanged: (value) {
                 setState(() {
                   if (value == 'Custom...') {

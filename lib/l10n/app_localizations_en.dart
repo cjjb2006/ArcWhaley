@@ -84,8 +84,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dialogOptionBackButtonActionShowClock => 'Show clock';
 
   @override
-  String get dialogTextNoFileExplorer =>
-      'Please install a file explorer in order to pick a picture.';
+  String get dialogTextNoFileExplorer => 'Please install a file explorer in order to pick a picture.';
 
   @override
   String get dialogTitleBackButtonAction => 'Choose the back button action';
@@ -192,8 +191,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get spacer => 'Spacer';
 
   @override
-  String get spacerMaxHeightRequirement =>
-      'Must be greater than 0 and less than or equal to 500';
+  String get spacerMaxHeightRequirement => 'Must be greater than 0 and less than or equal to 500';
 
   @override
   String get statusBar => 'Status bar';
@@ -250,8 +248,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get updateInstallPermissionTitle => 'Installer permission required';
 
   @override
-  String get updateInstallPermissionBody =>
-      'Allow Arc Launcher to install unknown apps, then retry the update.';
+  String get updateInstallPermissionBody => 'Allow Arc Launcher to install unknown apps, then retry the update.';
 
   @override
   String get updateOpenPermissionSettingsButton => 'Open permission settings';
@@ -271,8 +268,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get time => 'Time';
 
   @override
-  String get titleStatusBarSettingsPage =>
-      'Choose what to display in the status bar';
+  String get titleStatusBarSettingsPage => 'Choose what to display in the status bar';
 
   @override
   String get tvApplications => 'TV Apps';
@@ -323,8 +319,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get watchNextPermissionTitle => 'Watch Next permission required';
 
   @override
-  String get watchNextPermissionBody =>
-      'Allow access to TV listings to show your continue watching items.';
+  String get watchNextPermissionBody => 'Allow access to TV listings to show your continue watching items.';
 
   @override
   String get watchNextGrantPermission => 'Grant permission';

@@ -22,7 +22,7 @@ jobs:
           cache: true
       - run: flutter pub get
       - run: flutter analyze lib --no-fatal-infos --no-fatal-warnings
-      - run: flutter test test/whaley_defaults_test.dart test/providers/update_service_test.dart
+      - run: flutter test test/whaley_defaults_test.dart test/whaley_ui_test.dart test/grid_navigation_test.dart test/providers/update_service_test.dart
       - run: flutter build apk --flavor github --debug --target-platform android-arm
       - name: Verify actual Flutter engine ABI and Android 5 signing
         shell: bash

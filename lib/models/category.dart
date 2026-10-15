@@ -53,7 +53,7 @@ class LauncherSection
 
 class Category extends LauncherSection
 {
-  static const int          ColumnsCount  = 6;
+  static const int          ColumnsCount  = 4;
   static const int          RowHeight     = 110;
   static const CategorySort Sort          = CategorySort.manual;
   static const CategoryType Type          = CategoryType.grid;
@@ -63,6 +63,14 @@ class Category extends LauncherSection
   int rowHeight;
 
   String name;
+
+  String get displayName => switch (name) {
+    'All Apps' => '全部应用',
+    'Favorites' => '常用应用',
+    'TV Apps' => '电视应用',
+    'Non-TV Apps' => '其他应用',
+    _ => name,
+  };
 
   CategorySort sort;
 

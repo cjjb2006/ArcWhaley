@@ -18,7 +18,7 @@
 flutter pub get
 dart run build_runner build --delete-conflicting-outputs
 flutter test test/whaley_defaults_test.dart test/providers/update_service_test.dart
-flutter build apk --flavor github --debug --target-platform android-arm64
+flutter build apk --flavor github --debug --target-platform android-arm
 ```
 发布版须使用自己的固定签名并开启 v1 签名。不要提交密钥、SDK、APK、电视日志或私人配置。
 
@@ -27,6 +27,18 @@ flutter build apk --flavor github --debug --target-platform android-arm64
 
 第一版无已验证的微鲸 HDMI 直达接口；通过原厂桌面/遥控器信号源切换。不会猜测输入端口或修改CEC。
 
-本地验证：依赖解析、数据库代码生成、lib 静态分析（无错误；上游提示保留）和9项选定测试通过。本地SDK/NDK组件缺失导致本地打包受限；GitHub Actions run 38714597941 已成功完成 Android ARM64 debug APK 构建和上传。没有安装到电视。
+本地验证：依赖解析、数据库代码生成、lib 静态分析（无错误；上游提示保留）和9项选定测试通过。
+
+0.1.0 首包在电视启动时崩溃：32 位进程尝试加载 64 位 libflutter.so。APK 架构目录列表不能证明其中所有引擎均已打包。0.1.1 改用 android-arm 和 armeabi-v7a 过滤；CI 逐个读取原生库 ELF 头，验证 ELF32 / EM_ARM，然后验证 Android 5 签名。旧 0.1.0 安装包不应继续使用。修复构建后仍需重新进行电视运行验证。
 
 CI: https://github.com/cjjb2006/ArcWhaley/actions/runs/38714597941
+
+## 0.2.0 中文界面与大卡片
+- 固定简体中文，保留原厂应用名称，内置分区显示中文。
+- 默认每行 4 张卡片；升级时一次性将超过 4 列的旧分区调整为 4 列，卡片宽度相对 6 列约放大 1.5 倍。之后仍可在分区设置中调整。
+- 没有横幅的应用使用固定柔和渐变底板、原图标和较大的名称，不采用实时模糊。
+- 网格上下键按行列显式移动，避免跳过前一行到状态栏。
+- 应用设置列表按包名保留组件身份，更新包名时刷新图标 Future，避免排序和切换标签后图标串位。
+- 移除壁纸、强调色、继续观看、网络用量、原生屏保等不可用入口；关闭对应权限提示和后台统计/观看记录轮询。
+- 原生应用扫描移到工作线程，减少首次加载时阻塞界面。首次启动问题仍待实机复测。
+- 13 项针对性测试覆盖中文设置、移除入口、旧设置兼容、列表身份、网格上下移动及既有更新逻辑。

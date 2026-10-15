@@ -88,7 +88,14 @@ public class MainActivity extends FlutterActivity {
 
         new MethodChannel(messenger, METHOD_CHANNEL).setMethodCallHandler((call, result) -> {
             switch (call.method) {
-                case "getApplications" -> result.success(getApplications());
+                case "getApplications" -> new Thread(() -> {
+                    try {
+                        var applications = getApplications();
+                        runOnUiThread(() -> result.success(applications));
+                    } catch (Exception error) {
+                        runOnUiThread(() -> result.error("apps_query_failed", error.toString(), null));
+                    }
+                }, "whaley-app-query").start();
                 case "getApplicationBanner" -> result.success(getApplicationBanner(call.arguments()));
                 case "getApplicationIcon" -> result.success(getApplicationIcon(call.arguments()));
                 case "applicationExists" -> result.success(applicationExists(call.arguments()));

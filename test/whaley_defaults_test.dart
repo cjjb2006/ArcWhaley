@@ -23,6 +23,15 @@ void main() {
     expect(settings.backgroundBlurDisabled, isFalse);
     expect(settings.dockBackdropFilterDisabled, isFalse);
   });
+  test('removed media and usage widgets stay disabled after upgrade', () async {
+    SharedPreferences.setMockInitialValues({
+      'show_watch_next_section': true,
+      'show_wifi_widget_in_status_bar': true,
+    });
+    final settings = SettingsService(await SharedPreferences.getInstance());
+    expect(settings.showWatchNextSection, isFalse);
+    expect(settings.showWifiWidgetInStatusBar, isFalse);
+  });
   test('original home uses dedicated native action and reports failure', () async {
     const channel = MethodChannel('me.efesser.flauncher/method');
     final calls = <MethodCall>[];
