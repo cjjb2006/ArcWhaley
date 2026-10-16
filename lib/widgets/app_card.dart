@@ -64,6 +64,8 @@ class AppCard extends StatefulWidget {
   final VoidCallback? onFocused;
   final bool ensureVisibleOnFocus;
   final bool onlyScrollWhenNearBottom;
+  final FocusNode? focusNode;
+  final bool Function(LogicalKeyboardKey)? onNavigate;
 
   const AppCard({
     super.key,
@@ -78,6 +80,8 @@ class AppCard extends StatefulWidget {
     this.onFocused,
     this.ensureVisibleOnFocus = true,
     this.onlyScrollWhenNearBottom = false,
+    this.focusNode,
+    this.onNavigate,
   });
 
   @override
@@ -103,15 +107,15 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
   late final AnimationController _animation;
 
   late final CurvedAnimation _curvedAnimation;
-  static const double _focusedScale = 1.07;
-  static const Duration _focusAnimationDuration = Duration(milliseconds: 180);
+  static const double _focusedScale = 1.12;
+  static const Duration _focusAnimationDuration = Duration(milliseconds: 120);
 
   @override
   void initState() {
     super.initState();
     _animation = AnimationController(vsync: this, duration: const Duration(milliseconds: 1200));
     _curvedAnimation = CurvedAnimation(parent: _animation, curve: Curves.easeInOut);
-    _focusNode = FocusNode();
+    _focusNode = widget.focusNode ?? FocusNode();
     _isTraditionalHighlightMode = FocusManager.instance.highlightMode == FocusHighlightMode.traditional;
 
     FocusManager.instance.addHighlightModeListener(_focusHighlightModeChanged);
@@ -168,7 +172,7 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
     FocusManager.instance.removeHighlightModeListener(_focusHighlightModeChanged);
     _curvedAnimation.dispose();
     _animation.dispose();
-    _focusNode.dispose();
+    if (widget.focusNode == null) _focusNode.dispose();
 
     super.dispose();
   }
@@ -219,7 +223,7 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
                           Material(
                             borderRadius: BorderRadius.circular(12),
                             clipBehavior: Clip.antiAlias,
-                            elevation: shouldHighlight ? 7 : 4,
+                            elevation: shouldHighlight ? 3 : 0,
                             shadowColor: Colors.black,
                             child: Stack(
                               fit: StackFit.expand,
@@ -236,14 +240,6 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
                                   },
                                 ),
                                 if (_moving) ..._arrows(),
-                                IgnorePointer(
-                                  child: AnimatedOpacity(
-                                    duration: _focusAnimationDuration,
-                                    curve: Curves.easeInOut,
-                                    opacity: shouldHighlight ? 0.0 : 1.0,
-                                    child: const ColoredBox(color: Color(0x1A000000)),
-                                  ),
-                                ),
                               ],
                             ),
                           ),
@@ -289,7 +285,8 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
       }
       if (mounted) {
         setState(() {
-          _loadedImage = (type, ResizeImage(MemoryImage(bytes), width: 480));
+          _loadedImage = (type, ResizeImage(MemoryImage(bytes),
+              width: type == AppImageType.Banner ? 480 : 160));
         });
       }
     } catch (_) {
@@ -314,20 +311,34 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
       if (type == AppImageType.Banner) {
         return Ink.image(image: image, fit: BoxFit.cover);
       } else {
-        return Padding(
-          padding: const EdgeInsets.all(8),
+        final seed = app.packageName.codeUnits.fold<int>(0, (value, c) => (value * 31 + c) & 0x7fffffff);
+        const palettes = [
+          [Color(0xFF547C9D), Color(0xFF243B62)],
+          [Color(0xFF8178AB), Color(0xFF383B69)],
+          [Color(0xFF528F94), Color(0xFF284B63)],
+          [Color(0xFFA77789), Color(0xFF543C69)],
+          [Color(0xFF778AA4), Color(0xFF35465D)],
+        ];
+        return Ink(
+          decoration: BoxDecoration(gradient: LinearGradient(
+            begin: Alignment.topLeft, end: Alignment.bottomRight,
+            colors: palettes[seed % palettes.length])),
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
           child: Row(
             children: [
-              Expanded(flex: 2, child: Ink.image(image: image, height: double.maxFinite)),
+              Expanded(flex: 2, child: Padding(
+                padding: const EdgeInsets.all(4),
+                child: Image(image: image, fit: BoxFit.contain))),
               Flexible(
                 flex: 3,
                 child: Padding(
                   padding: const EdgeInsets.only(left: 8),
                   child: Text(
                     app.name,
-                    style: Theme.of(context).textTheme.bodySmall,
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w600, color: Colors.white, height: 1.3),
                     overflow: TextOverflow.ellipsis,
-                    maxLines: 3,
+                    maxLines: 2,
                   ),
                 ),
               ),
@@ -358,7 +369,7 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
               children: [
                 SizedBox(height: 18, width: 18, child: CircularProgressIndicator(strokeWidth: 2)),
                 SizedBox(width: 8),
-                Text("Loading"),
+                Text("正在加载"),
               ],
             ),
           ),
@@ -394,11 +405,6 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
       return;
     }
 
-    final now = DateTime.now();
-    if (_lastEnsureVisibleAt != null && now.difference(_lastEnsureVisibleAt!).inMilliseconds < 120) {
-      return;
-    }
-    _lastEnsureVisibleAt = now;
     if (widget.ensureVisibleOnFocus) {
       _ensureVisibleIfNeeded(
         context,
@@ -574,6 +580,8 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
           });
         });
       }
+      return KeyEventResult.handled;
+    } else if (key != null && widget.onNavigate?.call(key) == true) {
       return KeyEventResult.handled;
     } else if (key == LogicalKeyboardKey.arrowUp && widget.handleUpNavigationToSettings) {
       Actions.invoke(context, const MoveFocusToSettingsIntent());

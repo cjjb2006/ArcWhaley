@@ -28,12 +28,7 @@
         android:name="android.hardware.wifi"
         android:required="false" />
 
-    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS"/>
 
-    <uses-permission android:name="android.permission.READ_TV_LISTINGS"/>
-    <uses-permission android:name="com.android.providers.tv.permission.READ_CHANNELS"/>
-    <uses-permission android:name="com.android.providers.tv.permission.READ_EPG_DATA"/>
-    <uses-permission android:name="com.android.providers.tv.permission.WRITE_EPG_DATA"/>
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
@@ -41,7 +36,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES" />
-    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <!-- Brightness remains under the television system settings. -->
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
@@ -57,11 +52,11 @@
     </queries>
 
     <application
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:banner="@drawable/banner"
         android:fullBackupContent="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="Arc Launcher"
+        android:label="鲸简 Arc"
         android:requestLegacyExternalStorage="true">
         <!--
           Disable Impeller and fall back to the Skia renderer.

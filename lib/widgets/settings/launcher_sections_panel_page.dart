@@ -85,7 +85,7 @@ class _LauncherSectionsPanelPageState extends State<LauncherSectionsPanelPage> {
 
     String title = localizations.spacer;
     if (section is Category) {
-      title = section.name;
+      title = section.displayName;
 
       if (title == localizations.spacer) {
         title = localizations.disambiguateCategoryTitle(title);

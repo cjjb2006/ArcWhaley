@@ -99,19 +99,19 @@ class SettingsService extends ChangeNotifier {
 
   String get wifiUsagePeriod => _sharedPreferences.getString(_wifiUsagePeriod) ?? WIFI_USAGE_DAILY;
 
-  bool get showWifiWidgetInStatusBar => _sharedPreferences.getBool(_showWifiWidgetInStatusBar) ?? false;
+  bool get showWifiWidgetInStatusBar => false;
 
   bool get showNetworkIndicatorInStatusBar => _sharedPreferences.getBool(_showNetworkIndicatorInStatusBar) ?? true;
 
-  String get accentColorHex => _sharedPreferences.getString(_accentColor) ?? ACCENT_COLOR_WHITE;
+  String get accentColorHex => ACCENT_COLOR_WHITE;
 
   String get screensaverClockStyle => _sharedPreferences.getString(_screensaverClockStyle) ?? "minimal";
 
-  bool get dockBackdropFilterDisabled => _sharedPreferences.getBool(_dockBackdropFilterDisabled) ?? false;
+  bool get dockBackdropFilterDisabled => _sharedPreferences.getBool(_dockBackdropFilterDisabled) ?? true;
 
-  bool get backgroundBlurDisabled => _sharedPreferences.getBool(_backgroundBlurDisabled) ?? false;
+  bool get backgroundBlurDisabled => _sharedPreferences.getBool(_backgroundBlurDisabled) ?? true;
 
-  bool get showWatchNextSection => _sharedPreferences.getBool(_showWatchNextSection) ?? false;
+  bool get showWatchNextSection => false;
 
   bool get dockDarkBackground => _sharedPreferences.getBool(_dockDarkBackground) ?? false;
 

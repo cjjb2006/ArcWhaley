@@ -1,3 +1,13 @@
+# ArcWhaley · 鲸简 Arc
+
+面向微鲸 WTV55K1X / Android 5.0.2 的 Arc 适配分支。保留 Apple TV 风格卡片，使用独立包名、深色静态背景和返回微鲸桌面入口。
+
+**开发预览：尚未经过微鲸实机验收，请勿设置默认 HOME。** 兼容改动、构建与恢复边界见 [WHALEY.md](docs/WHALEY.md)。不包含自研系统固件，不修改系统分区。
+
+下面保留上游项目介绍；其新版 APK、更新及默认 HOME 操作不适用于本适配分支。
+
+---
+
 # Arc Launcher
 
 <picture>

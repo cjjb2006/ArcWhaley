@@ -251,13 +251,14 @@ class _AllAppsTab extends StatelessWidget {
         selector: (_, appsService) => appsService.applications.where((app) => !app.hidden).toList(),
         builder: (context, applications, _) {
           if (applications.isEmpty) {
-            return const _EmptyListPlaceholder("No applications found", autofocus: true);
+            return const _EmptyListPlaceholder("没有找到应用", autofocus: true);
           }
           return ListView(
             children: applications
                 .asMap()
                 .entries
                 .map((entry) => EnsureVisible(
+                      key: ValueKey(entry.value.packageName),
                       alignment: 0.5,
                       child: _AppListItem(entry.value, autofocus: entry.key == 0, isFirst: entry.key == 0),
                     ))
@@ -279,13 +280,14 @@ class _FavoritesTab extends StatelessWidget {
         },
         builder: (context, applications, _) {
           if (applications.isEmpty) {
-            return const _EmptyListPlaceholder("No applications found", autofocus: true);
+            return const _EmptyListPlaceholder("没有找到应用", autofocus: true);
           }
           return ListView(
             children: applications
                 .asMap()
                 .entries
                 .map((entry) => EnsureVisible(
+                      key: ValueKey(entry.value.packageName),
                       alignment: 0.5,
                       child: _AppListItem(entry.value, autofocus: entry.key == 0, isFirst: entry.key == 0),
                     ))
@@ -301,13 +303,14 @@ class _HiddenTab extends StatelessWidget {
         selector: (_, appsService) => appsService.applications.where((app) => app.hidden).toList(),
         builder: (context, applications, _) {
           if (applications.isEmpty) {
-            return const _EmptyListPlaceholder("No applications found", autofocus: true);
+            return const _EmptyListPlaceholder("没有找到应用", autofocus: true);
           }
           return ListView(
             children: applications
                 .asMap()
                 .entries
                 .map((entry) => EnsureVisible(
+                      key: ValueKey(entry.value.packageName),
                       alignment: 0.5,
                       child: _AppListItem(entry.value, autofocus: entry.key == 0, isFirst: entry.key == 0),
                     ))
@@ -373,7 +376,7 @@ class _AppListItem extends StatefulWidget
   final bool autofocus;
   final bool isFirst;
 
-  const _AppListItem(this.application, {this.autofocus = false, this.isFirst = false});
+  const _AppListItem(this.application, {super.key, this.autofocus = false, this.isFirst = false});
 
   @override
   State<StatefulWidget> createState() => _AppListItemState();
@@ -402,6 +405,14 @@ class _AppListItemState extends State<_AppListItem>
   void dispose() {
     _focusNode.dispose();
     super.dispose();
+  }
+
+  @override
+  void didUpdateWidget(covariant _AppListItem oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.application.packageName != widget.application.packageName) {
+      _iconLoadFuture = _loadAppIcon(context.read<AppsService>());
+    }
   }
 
   void _openAppDetails() {
@@ -452,7 +463,8 @@ class _AppListItemState extends State<_AppListItem>
                   child: InkWell(
                     borderRadius: BorderRadius.circular(12),
                   onTap: _openAppDetails,
-                  child: FutureBuilder(
+                  child: FutureBuilder<ImageProvider>(
+                    key: ValueKey(widget.application.packageName),
                     future: _iconLoadFuture,
                     builder: (context, snapshot) {
                       Widget appIcon;

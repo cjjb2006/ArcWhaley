@@ -1,0 +1,32 @@
+name: Verify existing API21 preview
+on:
+  push:
+    branches: [whaley-api21]
+    paths: [.github/workflows/verify-preview.yml]
+  workflow_dispatch:
+permissions:
+  actions: read
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: ArcWhaley-api21-preview
+          github-token: ${{ github.token }}
+          repository: cjjb2006/ArcWhaley
+          run-id: 38714597941
+      - name: Verify Android 5 package and signatures
+        shell: bash
+        run: |
+          set -euo pipefail
+          apk_file=$(find . -maxdepth 2 -name '*.apk' -print -quit)
+          test -n "$apk_file"
+          tools_dir=$(find "$ANDROID_HOME/build-tools" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -1)
+          "$tools_dir/aapt" dump badging "$apk_file" > package-metadata.txt
+          cat package-metadata.txt
+          grep -q "sdkVersion:'21'" package-metadata.txt
+          "$tools_dir/apksigner" verify --verbose --min-sdk-version 21 "$apk_file" | tee signature-metadata.txt
+          grep -q 'Verified using v1 scheme (JAR signing): true' signature-metadata.txt
+          sha256sum "$apk_file"

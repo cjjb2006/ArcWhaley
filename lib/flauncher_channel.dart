@@ -45,6 +45,8 @@ class FLauncherChannel {
   Future<bool> applicationExists(String packageName) async =>
       await _methodChannel.invokeMethod('applicationExists', packageName);
 
+  Future<bool> openOriginalHome() async => await _methodChannel.invokeMethod<bool>("openOriginalHome") ?? false;
+
   Future<void> launchActivityFromAction(String action) async => await _methodChannel.invokeMethod('launchActivityFromAction', action);
 
   Future<void> launchApp(String packageName) async => await _methodChannel.invokeMethod('launchApp', packageName);
