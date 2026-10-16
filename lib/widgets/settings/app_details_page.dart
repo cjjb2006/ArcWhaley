@@ -72,7 +72,7 @@ class AppDetailsPage extends StatelessWidget {
               _buildListTile(
                 context,
                 icon: appsService.isAppInFavorites(application) ? Icons.star : Icons.star_border,
-                title: appsService.isAppInFavorites(application) ? 'Remove from Fav' : 'Add to Fav',
+                title: appsService.isAppInFavorites(application) ? '从常用应用移除' : '添加到常用应用',
                 onTap: () => appsService.toggleFavorite(application),
               ),
               _buildListTile(
@@ -91,7 +91,7 @@ class AppDetailsPage extends StatelessWidget {
                 _buildListTile(
                   context,
                   icon: Icons.add_box_outlined,
-                  title: "Add to Category", // Need localization or string
+                  title: "添加到分类",
                   onTap: () => showDialog<Category>(
                     context: context,
                     builder: (_) => AddToCategoryDialog(application),

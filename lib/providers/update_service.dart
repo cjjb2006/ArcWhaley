@@ -84,19 +84,9 @@ class UpdateService {
   Future<UpdateResult> checkForUpdate() async {
     final packageInfo = await PackageInfo.fromPlatform();
     final currentVersion = packageInfo.version;
-    final release = await _fetchLatestStableRelease();
+    // Custom API21 builds must never offer the incompatible upstream APK.
+    return UpdateResult(updateAvailable: false, currentVersion: currentVersion, latestVersion: currentVersion);
 
-    final latestVersion = _normalizeVersion(release.tagName);
-    final updateAvailable = _compareVersions(latestVersion, currentVersion) > 0;
-
-    return UpdateResult(
-      updateAvailable: updateAvailable,
-      currentVersion: currentVersion,
-      latestVersion: latestVersion,
-      releaseNotes: release.body,
-      apkUrl: release.apkDownloadUrl,
-      apkName: release.apkName,
-    );
   }
 
   Future<DownloadedApk> downloadApk(UpdateResult update) async {

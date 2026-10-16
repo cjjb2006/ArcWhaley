@@ -94,6 +94,17 @@ class AppsService extends ChangeNotifier
     if (_database.wasCreated) {
       await _initDefaultCategories();
     }
+    final prefs = await _prefsAsync;
+    if (prefs.getBool('whaley_large_cards_v1') != true) {
+      for (final category in _categoriesById.values) {
+        if (category.columnsCount > 4) {
+          await _database.updateCategory(category.id,
+              CategoriesCompanion(columnsCount: const Value(4)));
+          category.columnsCount = 4;
+        }
+      }
+      await prefs.setBool('whaley_large_cards_v1', true);
+    }
 
     _fLauncherChannel.addAppsChangedListener((event) async {
       String? changedPackageName;
@@ -199,7 +210,8 @@ class AppsService extends ChangeNotifier
     notifyListeners();
     
     // Pre-cache icons for visible apps
-    _preCacheIcons();
+    // Load images as cards enter the viewport instead of flooding the TV's
+    // platform thread with requests for every installed app at startup.
   }
 
   Future<void> _preCacheIcons() async {
@@ -730,7 +742,9 @@ class AppsService extends ChangeNotifier
 
     try {
       newCategoryId = await _database.transaction(() async {
-        int newCategoryId = await _database.insertCategory(CategoriesCompanion.insert(name: categoryName, order: 0));
+        int newCategoryId = await _database.insertCategory(CategoriesCompanion.insert(
+          name: categoryName, order: 0, columnsCount: Value(columnsCount),
+          type: Value(type), sort: Value(sort), rowHeight: Value(rowHeight)));
         await _database.updateCategories(orderedCategories);
 
         return newCategoryId;

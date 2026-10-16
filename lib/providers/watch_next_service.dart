@@ -42,8 +42,8 @@ class WatchNextService extends ChangeNotifier {
   bool get hasItems => _items.isNotEmpty;
   bool get hasVisibleSection => !_isLoading && (!_hasPermission || _items.isNotEmpty);
 
-  WatchNextService(this._fLauncherChannel) {
-    _init();
+  WatchNextService(this._fLauncherChannel, {bool enabled = true}) {
+    if (enabled) _init();
   }
 
   void _init() async {

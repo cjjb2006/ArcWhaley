@@ -89,7 +89,7 @@ class CategoryRow extends StatelessWidget
             if (showCategoriesTitle) {
               return Padding(
                 padding: const EdgeInsets.only(left: 16, bottom: 8),
-                child: Text(category.name,
+                child: Text(category.displayName,
                   style: Theme.of(context)
                       .textTheme
                       .titleLarge!

@@ -105,7 +105,7 @@ class _ApplicationInfoPanelState extends State<ApplicationInfoPanel>
                        children: [
                          const Icon(Icons.add_box_outlined),
                          Container(width: 8),
-                         Text('Add to Category', style: Theme.of(context).textTheme.bodyMedium),
+                         Text('添加到分类', style: Theme.of(context).textTheme.bodyMedium),
                        ],
                      ),
                      onPressed: () async {
@@ -218,7 +218,7 @@ class _ApplicationInfoPanelState extends State<ApplicationInfoPanel>
                                children: [
                                  const Icon(Icons.image_search),
                                  Container(width: 8),
-                                 Text('Set Custom Banner', style: Theme.of(context).textTheme.bodyMedium),
+                                 Text('设置应用横幅', style: Theme.of(context).textTheme.bodyMedium),
                                ],
                              ),
 onPressed: () async {
@@ -257,7 +257,7 @@ onPressed: () async {
                                  children: [
                                    const Icon(Icons.hide_image_outlined),
                                    Container(width: 8),
-                                   Text('Clear Custom Banner', style: Theme.of(context).textTheme.bodyMedium),
+                                   Text('清除自定义横幅', style: Theme.of(context).textTheme.bodyMedium),
                                  ],
                                ),
                                onPressed: () async {

@@ -37,7 +37,9 @@ mixin FLauncherGradients {
   static final viciousStance = FLauncherGradient(
     "e89f29f3-a0a3-4ee6-a363-5e9df2a124fd",
     "Vicious Stance",
-    const LinearGradient(colors: [Color(0xFF29323C), Color(0xFF485563)], transform: GradientRotation(1.6)),
+    const LinearGradient(
+      colors: [Color(0xFF111827), Color(0xFF25334D), Color(0xFF39415F)],
+      begin: Alignment.bottomLeft, end: Alignment.topRight),
   );
   static final teenNotebook = FLauncherGradient(
     "027e7848-104c-42eb-94ce-d25762d426c1",

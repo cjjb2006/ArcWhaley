@@ -78,15 +78,13 @@ class AppLocalizationsTr extends AppLocalizations {
   String get dialogOptionBackButtonActionDoNothing => 'Hiçbir şey yapma';
 
   @override
-  String get dialogOptionBackButtonActionShowScreensaver =>
-      'Ekran koruyucuyu göster';
+  String get dialogOptionBackButtonActionShowScreensaver => 'Ekran koruyucuyu göster';
 
   @override
   String get dialogOptionBackButtonActionShowClock => 'Saati göster';
 
   @override
-  String get dialogTextNoFileExplorer =>
-      'Resim seçebilmek için lütfen bir dosya yöneticisi yükleyin.';
+  String get dialogTextNoFileExplorer => 'Resim seçebilmek için lütfen bir dosya yöneticisi yükleyin.';
 
   @override
   String get dialogTitleBackButtonAction => 'Geri tuşu eylemini seçin';
@@ -193,8 +191,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get spacer => 'Boşluk';
 
   @override
-  String get spacerMaxHeightRequirement =>
-      '0\'dan büyük ve 500\'e eşit veya küçük olmalıdır';
+  String get spacerMaxHeightRequirement => '0\'dan büyük ve 500\'e eşit veya küçük olmalıdır';
 
   @override
   String get statusBar => 'Durum çubuğu';
@@ -251,15 +248,13 @@ class AppLocalizationsTr extends AppLocalizations {
   String get updateInstallPermissionTitle => 'Yükleyici izni gerekli';
 
   @override
-  String get updateInstallPermissionBody =>
-      'Arc Launcher\'ın bilinmeyen uygulamaları yüklemesine izin verin, ardından güncellemeyi yeniden deneyin.';
+  String get updateInstallPermissionBody => 'Arc Launcher\'ın bilinmeyen uygulamaları yüklemesine izin verin, ardından güncellemeyi yeniden deneyin.';
 
   @override
   String get updateOpenPermissionSettingsButton => 'İzin ayarlarını aç';
 
   @override
-  String get updateErrorGeneric =>
-      'Güncelleme denetimi başarısız oldu. Lütfen tekrar deneyin.';
+  String get updateErrorGeneric => 'Güncelleme denetimi başarısız oldu. Lütfen tekrar deneyin.';
 
   @override
   String textAboutDialog(String repoUrl) {
@@ -273,8 +268,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get time => 'Saat';
 
   @override
-  String get titleStatusBarSettingsPage =>
-      'Durum çubuğunda gösterilecekleri seçin';
+  String get titleStatusBarSettingsPage => 'Durum çubuğunda gösterilecekleri seçin';
 
   @override
   String get tvApplications => 'TV Uygulamaları';
@@ -325,8 +319,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get watchNextPermissionTitle => 'Sıradaki İzlenecek izni gerekli';
 
   @override
-  String get watchNextPermissionBody =>
-      'İzlemeye devam et öğelerinizi göstermek için TV listelerine erişime izin verin.';
+  String get watchNextPermissionBody => 'İzlemeye devam et öğelerinizi göstermek için TV listelerine erişime izin verin.';
 
   @override
   String get watchNextGrantPermission => 'İzin ver';

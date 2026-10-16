@@ -1,0 +1,60 @@
+name: Whaley API21 preview
+on:
+  push:
+    branches: [whaley-api21]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.29.3'
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - run: flutter analyze lib --no-fatal-infos --no-fatal-warnings
+      - run: flutter test test/whaley_defaults_test.dart test/whaley_ui_test.dart test/grid_navigation_test.dart test/app_card_scroll_test.dart test/providers/update_service_test.dart
+      - run: flutter build apk --flavor github --release --target-platform android-arm
+        env:
+          WHALEY_PREVIEW: 'true'
+      - name: Verify actual Flutter engine ABI and Android 5 signing
+        shell: bash
+        run: |
+          set -euo pipefail
+          apk_file=build/app/outputs/flutter-apk/app-github-release.apk
+          python3 - "$apk_file" <<'PY'
+          import sys, zipfile
+          with zipfile.ZipFile(sys.argv[1]) as apk:
+              native = [n for n in apk.namelist() if n.startswith('lib/') and n.endswith('.so')]
+              assert 'lib/armeabi-v7a/libflutter.so' in native, native
+              assert 'lib/armeabi-v7a/libapp.so' in native, 'Missing AOT application library'
+              assert all(n.split('/')[1] == 'armeabi-v7a' for n in native), native
+              for name in native:
+                  data = apk.read(name)
+                  assert data[:5] == b'\x7fELF\x01', name
+                  assert int.from_bytes(data[18:20], 'little') == 40, name
+              print('All native libraries are ELF32 ARM:', len(native))
+          PY
+          tools_dir=$(find "$ANDROID_HOME/build-tools" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -1)
+          "$tools_dir/aapt" dump badging "$apk_file" > package-metadata.txt
+          head -12 package-metadata.txt
+          if grep -q 'application-debuggable' package-metadata.txt; then
+            echo 'Release build must not be debuggable'
+            exit 1
+          fi
+          "$tools_dir/apksigner" verify --verbose --min-sdk-version 21 "$apk_file"
+          sha256sum "$apk_file"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ArcWhaley-api21-arm32-preview
+          path: build/app/outputs/flutter-apk/*github-release.apk
+          retention-days: 14

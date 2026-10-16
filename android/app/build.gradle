@@ -64,12 +64,16 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.omeda.arc"
+        applicationId "local.whaley.arc"
         compileSdk 36
-        minSdkVersion flutter.minSdkVersion
+        minSdkVersion 21
         targetSdk 35
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+        // This TV launches apps in a 32-bit process, even though its CPU is ARM64.
+        ndk {
+            abiFilters 'armeabi-v7a'
+        }
     }
 
     signingConfigs {
@@ -102,17 +106,20 @@ android {
             signingConfig signingConfigs.debug
         }
         release {
-            minifyEnabled true
-            shrinkResources true
+            minifyEnabled System.getenv('WHALEY_PREVIEW') != 'true'
+            shrinkResources System.getenv('WHALEY_PREVIEW') != 'true'
+            if (System.getenv('WHALEY_PREVIEW') == 'true') {
+                applicationIdSuffix '.debug'
+            }
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.release
+            signingConfig System.getenv('WHALEY_PREVIEW') == 'true' ? signingConfigs.debug : signingConfigs.release
         }
     }
 
     splits {
         abi {
             // https://stackoverflow.com/a/39950584/21037183
-            enable gradle.startParameter.taskNames.any {
+            enable System.getenv('WHALEY_PREVIEW') != 'true' && gradle.startParameter.taskNames.any {
                 it.startsWith("assemble") && it.endsWith("Release")
             }
             reset()
@@ -120,12 +127,13 @@ android {
             def releaseAbis = System.getenv("CI") == "true"
                 ? ["arm64-v8a", "armeabi-v7a"]
                 : ["arm64-v8a", "armeabi-v7a", "x86", "x86_64"]
-            include(*releaseAbis)
+            include 'armeabi-v7a'
             universalApk true
         }
     }
 
     compileOptions {
+        coreLibraryDesugaringEnabled true
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
     }
@@ -147,3 +155,5 @@ android {
 flutter {
     source '../..'
 }
+
+dependencies { coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:2.1.5" }
